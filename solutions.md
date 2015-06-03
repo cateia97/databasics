@@ -30,10 +30,23 @@ How many total items did we sell?
 `SELECT SUM(quantity) FROM orders;`
 
 How much was spent on books?
+(This question is a bit vague, because the query could include items from categories such as "Toys & Books". So, I'm giving the answer two ways; the first for the broad category search, and the second for the strict "Books" search.)
+
+`SELECT SUM(price) FROM orders JOIN items ON items.id WHERE items.category LIKE "%Books%";`
+`SELECT SUM(price) FROM orders JOIN items ON items.id WHERE items.category = "Books";`
 
 Simulate buying an item by inserting a User for yourself and an Order for that User.
 
+`INSERT INTO users (first_name, last_name, email) VALUES ("Kelly", "Bristol", "bristolkr@gmail.com");`
+`INSERT INTO addresses (user_id, street, city, state, zip)` 
+`VALUES ((SELECT users.id FROM users WHERE first_name = "Kelly" AND last_name = "Bristol"), "123 Puritan Lane", "Small Town", "ND", 58762);`
+`INSERT INTO orders (user_id, item_id, quantity, created_at)` 
+`VALUES ((SELECT users.id FROM users WHERE users.first_name = "Kelly" AND users.last_name = "Bristol"), (SELECT items.id FROM items WHERE items.title =` `"Intelligent Concrete Pants"), 1, CURRENT_TIMESTAMP);`
+
 What item was ordered most often? Grossed the most money?
+
+Most ordered: `SELECT item_id, SUM(quantity) FROM orders GROUP BY item_id ORDER BY SUM(quantity) DESC LIMIT 1;`
+Highest grossing: 
 
 What user spent the most?
 
